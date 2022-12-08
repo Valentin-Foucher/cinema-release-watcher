@@ -1,0 +1,5 @@
+alerts:
+  telegram:
+    token: !ENV ${TELEGRAM_BOT_TOKEN}
+    channel: !ENV ${TELEGRAM_CHANNEL}
+
