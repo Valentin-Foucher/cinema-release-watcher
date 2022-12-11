@@ -1,5 +1,9 @@
-alerts:
-  telegram:
-    token: !ENV ${TELEGRAM_BOT_TOKEN}
-    channel: !ENV ${TELEGRAM_CHANNEL}
+telegram:
+  base_url: https://api.telegram.org
+  token: !ENV ${TELEGRAM_BOT_TOKEN}
+  channel: !ENV ${TELEGRAM_CHANNEL}
 
+TMdB:
+  api_key: !ENV {TMDB_API_KEY}
+  region: FR
+  language: fr-FR
