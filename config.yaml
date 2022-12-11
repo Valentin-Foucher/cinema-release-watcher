@@ -4,6 +4,17 @@ telegram:
   channel: !ENV ${TELEGRAM_CHANNEL}
 
 TMdB:
-  api_key: !ENV {TMDB_API_KEY}
+  base_url: https://api.themoviedb.org/
+  api_key: !ENV ${TMDB_API_KEY}
   region: FR
   language: fr-FR
+  preferences:
+    minimal_note: 7
+    premium_note: 8
+    genres:
+      - Thriller
+      - Science-Fiction
+      - Drame
+      - Crime
+      - Aventure
+      - Fantastique

@@ -7,7 +7,7 @@ from cinema_release_watcher.domain.movies import Movie, Genre
 
 class Client(BaseJsonRestClient, ABC):
     @abstractmethod
-    def retrieve_movies(self, min_date: date, max_date: date) -> list[Movie]:
+    def retrieve_movies(self, min_date: date, max_date: date, genres: list[Genre]) -> list[Movie]:
         raise NotImplementedError
 
     @abstractmethod

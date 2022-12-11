@@ -11,16 +11,16 @@ class BaseJsonRestClient:
 
         return method(f'{self._config["base_url"]}/{path}', **kwargs)
 
-    def get(self, path: str, query_parameters: Optional[dict[str, Any]] = None) -> requests.Response:
+    def _get(self, path: str, query_parameters: Optional[dict[str, Any]] = None) -> requests.Response:
         return self._request(requests.get, path, params=query_parameters)
 
-    def put(self, path: str, data: dict[Any, Any], query_parameters: Optional[dict[str, Any]] = None) \
+    def _put(self, path: str, data: dict[Any, Any], query_parameters: Optional[dict[str, Any]] = None) \
             -> requests.Response:
         return self._request(requests.put, path, data=data, params=query_parameters)
 
-    def post(self, path: str, data: dict[Any, Any], query_parameters: Optional[dict[str, Any]] = None) \
+    def _post(self, path: str, data: dict[Any, Any], query_parameters: Optional[dict[str, Any]] = None) \
             -> requests.Response:
         return self._request(requests.post, path, data=data, params=query_parameters)
 
-    def delete(self, path: str, query_parameters: Optional[dict[str, Any]] = None):
+    def _delete(self, path: str, query_parameters: Optional[dict[str, Any]] = None):
         self._request(requests.get, path, params=query_parameters)
