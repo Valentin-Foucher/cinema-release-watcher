@@ -5,6 +5,7 @@ from cinema_release_watcher import config
 from cinema_release_watcher.api_clients.alerts.telegram import TelegramClient
 from cinema_release_watcher.api_clients.movies.tmdb import TMdBClient
 from cinema_release_watcher.constants import PresentationStrategies
+from cinema_release_watcher.messages import text, pdf
 
 
 def main(strategy: str):
@@ -21,35 +22,18 @@ def main(strategy: str):
 
     for movie in movies:
         if movie.vote_average >= config.get('TMdB.preferences.premium_note'):
-            starred_movies.append(str(movie))
+            starred_movies.append(movie)
         elif any(genre in preferred_genres for genre in movie.genres) \
                 and movie.vote_average >= config.get('TMdB.preferences.minimal_note'):
-            relevant_movies.append(str(movie))
+            relevant_movies.append(movie)
 
     telegram_client = TelegramClient(config.get('telegram'))
 
     if strategy == PresentationStrategies.TEXT:
-        message = 'Hello! 👋\n\n'
-        line_separator = '\n• '
-        if starred_movies and relevant_movies:
-            message += 'Here are movies that many people like:' \
-                       f'{line_separator}{line_separator.join(starred_movies)}\n\n' \
-                       'And these are movies that you might like according to your preferences:' \
-                       f'{line_separator}{line_separator.join(relevant_movies)}'
-        elif starred_movies:
-            message += 'Here are movies that many people like:' \
-                       f'{line_separator}{line_separator.join(starred_movies)}'
-        elif relevant_movies:
-            message += 'Here are movies that you might like according to your preferences:' \
-                       f'{line_separator}{line_separator.join(relevant_movies)}'
-        else:
-            message += 'Unfortunately, there does not seem to be any movie that you would like that were recently ' \
-                       'released 😔'
-
-        telegram_client.send(message)
+        telegram_client.send(text.get_message(starred_movies, relevant_movies))
     elif strategy == PresentationStrategies.PDF:
-        # TODO
-        telegram_client.send_document('')
+        with pdf.PdfResource(starred_movies, relevant_movies) as file_name:
+            telegram_client.send_document(file_name)
     else:
         raise RuntimeError(f'Invalid strategy: {strategy}')
 

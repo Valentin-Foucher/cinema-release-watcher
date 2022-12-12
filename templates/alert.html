@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-style: normal; font-variant: normal; line-height: 26.4px;
+        }
+        img.emoji {
+           height: 1em;
+           width: 1em;
+           margin: 0 .05em 0 .1em;
+           vertical-align: -0.1em;
+        }
+
+        h1 {
+            font-size: 38px;
+        }
+        h2 {
+            font-size: 30px;
+        }
+        h3 {
+            font-size: 26px;
+        }
+        .genre {
+            font-size: 22px;
+            font-weight: 650;
+        }
+        .overview {
+            font-size: 20px;
+        }
+
+    </style>
+    <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?11.2"></script>
+    <script>window.onload = function () { twemoji.parse(document.body);}</script>
+</head>
+<body>
+    <div class="container">
+        <h1>Hello again! 👋</h1>
+        <div style="font-size: 22px;">Here is your weekly release digest, enjoy! 😉</div>
+        <br/>
+
+        <h2>Starred movies ⭐</h2>
+        <div class="starred_movies">
+            {% for movie in starred_movies %}
+                <h3>{{ movie.title }}
+                    {% if movie.title != movie.original_title %}
+                        - {{ movie.original_title }}
+                    {% endif %}</h3>
+                <i class="genre">{{ movie.genres|join(', ') }}</i>
+                <br/>
+                <br/>
+                <i class="overview"> {{ movie.overview }}</i>
+                <br/>
+            {% endfor %}
+        </div>
+        <br/>
+
+        <h2>Movies that you might like 🔥</h2>
+        <div class="relevant_movies">
+            {% for movie in relevant_movies %}
+                <h3>{{ movie.title }}
+                    {% if movie.title != movie.original_title %}
+                        - {{ movie.original_title }}
+                    {% endif %}</h3>
+                <i class="genre">{{ movie.genres|join(', ') }}</i>
+                <br/>
+                <br/>
+                <i class="overview">{{ movie.overview }}</i>
+                <br/>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -18,6 +18,7 @@ class Movie:
     genre_ids: Optional[list[int]]
     title: str
     original_title: str
+    overview: str
     vote_average: float
     release_date: str
     genres: Optional[list[str]] = None
