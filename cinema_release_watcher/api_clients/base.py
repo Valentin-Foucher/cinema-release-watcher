@@ -3,6 +3,7 @@ from typing import Any, Callable, Union, Optional, IO
 import requests
 
 from cinema_release_watcher import config
+from cinema_release_watcher.object_utils import wrap
 
 
 class BaseJsonRestClient:
@@ -17,14 +18,18 @@ class BaseJsonRestClient:
             **kwargs
     ) -> requests.Response:
         tries_count = 0
+        expected_status_codes = wrap(status_code)
 
         while True:
             response = method(f'{self._config["base_url"]}/{path}', **kwargs)
             if tries_count < config.get('http_client.max_retries') \
-                    or (not status_code or response.status_code == status_code):
+                    or (not status_code or response.status_code in expected_status_codes):
                 break
 
             tries_count += 1
+
+        if status_code and response.status_code not in expected_status_codes:
+            raise RuntimeError(f'Unexpected status code ({response.status_code}): {response.text}')
 
         return response
 
@@ -34,7 +39,7 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[int] = None
+            status_code: Optional[Union[int, list[int]]] = None
     ) -> requests.Response:
         return self._request(requests.get, path,
                              headers=headers,
@@ -48,7 +53,7 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[int] = None
+            status_code: Optional[Union[int, list[int]]] = None
     ) -> requests.Response:
         return self._request(requests.put, path,
                              data=data,
@@ -64,7 +69,7 @@ class BaseJsonRestClient:
             files: Optional[dict[str, IO]] = None,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[int] = None
+            status_code: Optional[Union[int, list[int]]] = None
     ) -> requests.Response:
         return self._request(requests.post, path,
                              data=data,
@@ -79,7 +84,7 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[int] = None
+            status_code: Optional[Union[int, list[int]]] = None
     ) -> requests.Response:
         return self._request(requests.get, path,
                              headers=headers,

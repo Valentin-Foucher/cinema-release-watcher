@@ -20,11 +20,12 @@ class TMdBClient(Client):
                                      'region': self._config['region'],
                                      'sort_by': 'vote_average.desc',
                                      'include_adult': False,
-                                     'with_release_type': '3|2',
+                                     'with_release_type': '3|2',  # released in theatres
                                      'release_date.gte': min_date.isoformat(),
                                      'release_date.lte': max_date.isoformat(),
                                      'page': page_number
-                                 })  # released in theatres
+                                 },
+                                 status_code=[304, 200])
 
             try:
                 json_response = response.json()
@@ -42,7 +43,8 @@ class TMdBClient(Client):
     def retrieve_genres(self) -> list[Genre]:
         response = self._get('3/genre/movie/list',
                              query_parameters=dict(api_key=self._config['api_key'],
-                                                   language=self._config['language']))
+                                                   language=self._config['language']),
+                             status_code=[304, 200])
 
         try:
             json_response = response.json()

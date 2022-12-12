@@ -23,7 +23,7 @@ class PdfResource:
         template = Environment(loader=FileSystemLoader("templates/")).get_template('alert.html')
         html = template.render(starred_movies=self._starred_movies,
                                relevant_movies=self._relevant_movies)
-        pdfkit.from_string(html, file_name := f'{str(uuid.uuid4())}.pdf')
+        pdfkit.from_string(html, file_name := f'release-report.pdf')
         return file_name
 
 

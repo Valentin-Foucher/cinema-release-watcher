@@ -8,8 +8,9 @@ class TelegramClient(Client):
                    status_code=200)
 
     def send_document(self, path: str):
-        self._post(f'bot{self._config["token"]}/sendDocument', dict(chat_id=self._config['channel'],
-                                                                    document='attach://file',
-                                                                    caption='Weekly movie update 🎬'),
-                   files={'file': open(path, 'rb')},
-                   status_code=200)
+        with open(path, 'rb') as pdf_file:
+            self._post(f'bot{self._config["token"]}/sendDocument', dict(chat_id=self._config['channel'],
+                                                                        document='attach://file',
+                                                                        caption='Weekly movie update 🎬'),
+                       files={'file': pdf_file},
+                       status_code=200)
