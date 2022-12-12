@@ -1,0 +1,35 @@
+on:
+  schedule:
+    - cron: '0 11 * * 3'
+  workflow_dispatch:
+    inputs:
+      strategy:
+        description: 'Strategy to be used to generate the report (text or pdf)'
+        required: true
+        type: string
+        default: pdf
+jobs:
+  weekly-release:
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install wkhtmltopdf
+        run: sudo apt-get install wkhtmltopdf
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+
+      # Run
+      - name: Run script
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: PYTHONPATH=$(pwd) poetry run python cinema_release_watcher/main.py -s ${{ github.event.inputs.strategy || 'pdf' }}

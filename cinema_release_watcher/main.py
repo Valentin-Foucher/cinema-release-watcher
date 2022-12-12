@@ -1,5 +1,5 @@
 import argparse
-from datetime import date, timedelta
+from datetime import timedelta, timezone, datetime
 
 from cinema_release_watcher import config
 from cinema_release_watcher.api_clients.alerts.telegram import TelegramClient
@@ -9,7 +9,7 @@ from cinema_release_watcher.messages import text, pdf
 
 
 def main(strategy: str):
-    this_week = date.today()
+    this_week = datetime.now(timezone.utc).date()
     last_week = this_week - timedelta(days=7)
 
     tmdb_client = TMdBClient(config.get('TMdB'))
