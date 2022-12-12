@@ -21,3 +21,6 @@ TMdB:
       - Crime
       - Aventure
       - Fantastique
+    excluded_genres:
+      - Documentaire
+      - Animation

@@ -17,10 +17,13 @@ def main(strategy: str):
     movies = tmdb_client.retrieve_movies(last_week, this_week, genres)
 
     preferred_genres = config.get('TMdB.preferences.genres')
+    excluded_genres = config.get('TMdB.preferences.excluded_genres')
     relevant_movies = []
     starred_movies = []
 
     for movie in movies:
+        if any(genre in excluded_genres for genre in movie.genres):
+            continue
         if movie.vote_average >= config.get('TMdB.preferences.premium_note'):
             starred_movies.append(movie)
         elif any(genre in preferred_genres for genre in movie.genres) \
