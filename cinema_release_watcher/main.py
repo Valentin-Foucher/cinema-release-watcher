@@ -1,5 +1,6 @@
 import argparse
 from datetime import timedelta, timezone, datetime
+from typing import Optional
 
 from cinema_release_watcher import config
 from cinema_release_watcher.api_clients.alerts.telegram import TelegramClient
@@ -8,13 +9,17 @@ from cinema_release_watcher.constants import PresentationStrategies
 from cinema_release_watcher.messages import text, pdf
 
 
+def get_movie_director(tmdb_client: TMdBClient, movie_id: int) -> Optional[str]:
+    return tmdb_client.get_movie_director(movie_id)
+
+
 def main(strategy: str):
     this_week = datetime.now(timezone.utc).date()
     last_week = this_week - timedelta(days=7)
 
     tmdb_client = TMdBClient(config.get('TMdB'))
     genres = tmdb_client.retrieve_genres()
-    movies = tmdb_client.retrieve_movies(last_week, this_week, genres)
+    movies = tmdb_client.retrieve_movies(last_week, this_week)
 
     preferred_genres = config.get('TMdB.preferences.genres')
     excluded_genres = config.get('TMdB.preferences.excluded_genres')
@@ -22,12 +27,16 @@ def main(strategy: str):
     starred_movies = []
 
     for movie in movies:
+        movie = movie.with_genres(genres)
+
         if any(genre in excluded_genres for genre in movie.genres):
             continue
         if movie.vote_average >= config.get('TMdB.preferences.premium_note'):
+            movie.director = get_movie_director(tmdb_client, movie.id)
             starred_movies.append(movie)
         elif any(genre in preferred_genres for genre in movie.genres) \
                 and movie.vote_average >= config.get('TMdB.preferences.minimal_note'):
+            movie.director = get_movie_director(tmdb_client, movie.id)
             relevant_movies.append(movie)
 
     telegram_client = TelegramClient(config.get('telegram'))

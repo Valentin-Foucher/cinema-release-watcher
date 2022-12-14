@@ -1,5 +1,4 @@
 import os
-import uuid
 
 import pdfkit
 from jinja2 import Environment, FileSystemLoader
@@ -25,5 +24,3 @@ class PdfResource:
                                relevant_movies=self._relevant_movies)
         pdfkit.from_string(html, file_name := f'release-report.pdf')
         return file_name
-
-

@@ -10,3 +10,5 @@ class PresentationStrategies(Enum):
 
 
 LINE_SEPARATOR = '\n• '
+
+DIRECTOR = 'Director'

@@ -1,14 +1,29 @@
 import sys
 from datetime import date
+from typing import Optional
 
 from requests import JSONDecodeError
 
 from cinema_release_watcher.api_clients.movies.interface import Client
+from cinema_release_watcher.constants import DIRECTOR
 from cinema_release_watcher.domain.movies import Genre, Movie
 
 
 class TMdBClient(Client):
-    def retrieve_movies(self, min_date: date, max_date: date, genres: list[Genre]) -> list[Movie]:
+    def retrieve_genres(self) -> list[Genre]:
+        response = self._get('3/genre/movie/list',
+                             query_parameters=dict(api_key=self._config['api_key'],
+                                                   language=self._config['language']),
+                             status_code=[304, 200])
+
+        try:
+            json_response = response.json()
+        except JSONDecodeError:
+            raise RuntimeError(f'Could not decode response: {response.text}')
+
+        return [Genre.from_dict(genre) for genre in json_response['genres']]
+
+    def retrieve_movies(self, min_date: date, max_date: date) -> list[Movie]:
         page_number = 1
         total_pages = sys.maxsize
         parsed_movies = []
@@ -33,17 +48,16 @@ class TMdBClient(Client):
                 raise RuntimeError(f'Could not decode response: {response.text}')
 
             for retrieved_movie in json_response.get('results'):
-                parsed_movies.append(Movie.from_dict(retrieved_movie).with_genres(genres))
+                parsed_movies.append(Movie.from_dict(retrieved_movie))
 
             page_number += 1
             total_pages = int(json_response['total_pages'])
 
         return parsed_movies
 
-    def retrieve_genres(self) -> list[Genre]:
-        response = self._get('3/genre/movie/list',
-                             query_parameters=dict(api_key=self._config['api_key'],
-                                                   language=self._config['language']),
+    def get_movie_director(self, movie_id: int) -> Optional[str]:
+        response = self._get(f'3/movie/{movie_id}/credits',
+                             query_parameters={'api_key': self._config['api_key']},
                              status_code=[304, 200])
 
         try:
@@ -51,4 +65,7 @@ class TMdBClient(Client):
         except JSONDecodeError:
             raise RuntimeError(f'Could not decode response: {response.text}')
 
-        return [Genre.from_dict(genre) for genre in json_response['genres']]
+        try:
+            return next(person.get('name') for person in json_response.get('crew') if person.get('job') == DIRECTOR)
+        except StopIteration:
+            return

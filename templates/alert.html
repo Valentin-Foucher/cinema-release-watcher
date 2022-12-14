@@ -45,8 +45,9 @@
             {% for movie in starred_movies %}
                 <h3>{{ movie.title }}
                     {% if movie.title != movie.original_title %}
-                        - {{ movie.original_title }}
-                    {% endif %}</h3>
+                        ({{ movie.original_title }})
+                    {% endif %}
+                    - {{ movie.director }}</h3>
                 <i class="genre">{{ movie.genres|join(', ') }}</i>
                 <br/>
                 <br/>
@@ -61,8 +62,9 @@
             {% for movie in relevant_movies %}
                 <h3>{{ movie.title }}
                     {% if movie.title != movie.original_title %}
-                        - {{ movie.original_title }}
-                    {% endif %}</h3>
+                         ({{ movie.original_title }})
+                    {% endif %}
+                    - {{ movie.director }}</h3>
                 <i class="genre">{{ movie.genres|join(', ') }}</i>
                 <br/>
                 <br/>
