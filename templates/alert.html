@@ -22,6 +22,9 @@
         h3 {
             font-size: 26px;
         }
+        .introduction {
+            font-size: 22px
+        }
         .genre {
             font-size: 22px;
             font-weight: 650;
@@ -37,41 +40,67 @@
 <body>
     <div class="container">
         <h1>Hello again! 👋</h1>
-        <div style="font-size: 22px;">Here is your weekly release digest, enjoy! 😉</div>
-        <br/>
+        {% if relevant_movies or starred_movies %}
+            <div class="introduction">
+                Here is your weekly release digest, enjoy! 😉
+            </div>
+            <br/>
 
-        <h2>Starred movies ⭐</h2>
-        <div class="starred_movies">
-            {% for movie in starred_movies %}
-                <h3>{{ movie.title }}
-                    {% if movie.title != movie.original_title %}
-                        ({{ movie.original_title }})
-                    {% endif %}
-                    - {{ movie.director }}</h3>
-                <i class="genre">{{ movie.genres|join(', ') }}</i>
-                <br/>
-                <br/>
-                <i class="overview"> {{ movie.overview }}</i>
-                <br/>
-            {% endfor %}
-        </div>
-        <br/>
+            {% if starred_movies %}
+                <h2>Starred movies ⭐</h2>
+                <div class="starred_movies">
+                    {% for movie in starred_movies %}
+                        <h3>
+                            {{ movie.title }}
+                            {% if movie.title != movie.original_title %}
+                                ({{ movie.original_title }})
+                            {% endif %}
+                            - {{ movie.director }}
+                        </h3>
+                        <i class="genre">
+                            {{ movie.genres|join(', ') }}
+                        </i>
+                        <br/>
+                        <br/>
+                        <i class="overview">
+                            {{ movie.overview }}
+                        </i>
+                        <br/>
+                    {% endfor %}
+                </div>
+            <br/>
+            {% endif %}
 
-        <h2>Movies that you might like 🔥</h2>
-        <div class="relevant_movies">
-            {% for movie in relevant_movies %}
-                <h3>{{ movie.title }}
-                    {% if movie.title != movie.original_title %}
-                         ({{ movie.original_title }})
-                    {% endif %}
-                    - {{ movie.director }}</h3>
-                <i class="genre">{{ movie.genres|join(', ') }}</i>
+            {% if relevant_movies %}
+                <h2>Movies that you might like 🔥</h2>
+                <div class="relevant_movies">
+                    {% for movie in relevant_movies %}
+                        <h3>
+                            {{ movie.title }}
+                            {% if movie.title != movie.original_title %}
+                                 ({{ movie.original_title }})
+                            {% endif %}
+                            - {{ movie.director }}
+                        </h3>
+                        <i class="genre">
+                            {{ movie.genres|join(', ') }}
+                        </i>
+                        <br/>
+                        <br/>
+                        <i class="overview">
+                            {{ movie.overview }}
+                        </i>
+                        <br/>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="introduction">
+                Sorry, we could not find any movies that might interest you this week 😢.
                 <br/>
-                <br/>
-                <i class="overview">{{ movie.overview }}</i>
-                <br/>
-            {% endfor %}
-        </div>
+                Come back next week!
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
