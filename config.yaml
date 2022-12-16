@@ -2,12 +2,15 @@ http_client:
   max_retries: 3
 
 telegram:
-  base_url: https://api.telegram.org
+  urls:
+    base: https://api.telegram.org
   token: !ENV ${TELEGRAM_BOT_TOKEN}
   channel: !ENV ${TELEGRAM_CHANNEL}
 
 TMdB:
-  base_url: https://api.themoviedb.org
+  urls:
+    base:  https://api.themoviedb.org
+    images: https://image.tmdb.org/
   api_key: !ENV ${TMDB_API_KEY}
   region: FR
   language: fr-FR

@@ -12,6 +12,10 @@
            margin: 0 .05em 0 .1em;
            vertical-align: -0.1em;
         }
+        img.movie-poster {
+            height: 350px;
+            width: auto;
+        }
 
         h1 {
             font-size: 38px;
@@ -22,6 +26,7 @@
         h3 {
             font-size: 26px;
         }
+
         .introduction {
             font-size: 22px
         }
@@ -31,6 +36,16 @@
         }
         .overview {
             font-size: 20px;
+        }
+        .movie {
+            display: flex;
+            display: -webkit-box; // wkhtmltopdf
+        }
+        .movie:nth-of-type(even) {
+            flex-direction: row-reverse;
+        }
+        .movie-info {
+            margin: 0 10px;
         }
 
     </style>
@@ -50,21 +65,26 @@
                 <h2>Starred movies ⭐</h2>
                 <div class="starred_movies">
                     {% for movie in starred_movies %}
-                        <h3>
-                            {{ movie.title }}
-                            {% if movie.title != movie.original_title %}
-                                ({{ movie.original_title }})
-                            {% endif %}
-                            - {{ movie.director }}
-                        </h3>
-                        <i class="genre">
-                            {{ movie.genres|join(', ') }}
-                        </i>
-                        <br/>
-                        <br/>
-                        <i class="overview">
-                            {{ movie.overview }}
-                        </i>
+                        <div class="movie">
+                            <img class="movie-poster" src='{{movie.image}}'/>
+                            <div class="movie-info">
+                                <h3>
+                                    {{ movie.title }}
+                                    {% if movie.title != movie.original_title %}
+                                        ({{ movie.original_title }})
+                                    {% endif %}
+                                    - {{ movie.director }}
+                                </h3>
+                                <i class="genre">
+                                    {{ movie.genres|join(', ') }}
+                                </i>
+                                <br/>
+                                <br/>
+                                <i class="overview">
+                                    {{ movie.overview }}
+                                </i>
+                            </div>
+                        </div>
                         <br/>
                     {% endfor %}
                 </div>
@@ -75,21 +95,26 @@
                 <h2>Movies that you might like 🔥</h2>
                 <div class="relevant_movies">
                     {% for movie in relevant_movies %}
-                        <h3>
-                            {{ movie.title }}
-                            {% if movie.title != movie.original_title %}
-                                 ({{ movie.original_title }})
-                            {% endif %}
-                            - {{ movie.director }}
-                        </h3>
-                        <i class="genre">
-                            {{ movie.genres|join(', ') }}
-                        </i>
-                        <br/>
-                        <br/>
-                        <i class="overview">
-                            {{ movie.overview }}
-                        </i>
+                        <div class="movie">
+                            <img class="movie-poster" src='{{movie.image}}'/>
+                            <div class="movie-info">
+                                <h3>
+                                    {{ movie.title }}
+                                    {% if movie.title != movie.original_title %}
+                                         ({{ movie.original_title }})
+                                    {% endif %}
+                                    - {{ movie.director }}
+                                </h3>
+                                <i class="genre">
+                                    {{ movie.genres|join(', ') }}
+                                </i>
+                                <br/>
+                                <br/>
+                                <i class="overview">
+                                    {{ movie.overview }}
+                                </i>
+                            </div>
+                        </div>
                         <br/>
                     {% endfor %}
                 </div>

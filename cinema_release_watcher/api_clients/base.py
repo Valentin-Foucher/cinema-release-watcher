@@ -3,7 +3,8 @@ from typing import Any, Callable, Union, Optional, IO
 import requests
 
 from cinema_release_watcher import config
-from cinema_release_watcher.object_utils import wrap
+from cinema_release_watcher.constants import BASE_CLIENT_TYPE
+from cinema_release_watcher.utils.object_utils import get_nested_element, wrap
 
 
 class BaseJsonRestClient:
@@ -14,14 +15,16 @@ class BaseJsonRestClient:
             self,
             method: Callable[..., requests.Response],
             path: str,
+            client_type: str = BASE_CLIENT_TYPE,
             status_code: Optional[int] = None,
             **kwargs
     ) -> requests.Response:
         tries_count = 0
         expected_status_codes = wrap(status_code)
 
+        url = f'{get_nested_element(self._config, f"urls.{client_type}")}/{path}'
         while True:
-            response = method(f'{self._config["base_url"]}/{path}', **kwargs)
+            response = method(url, **kwargs)
             if tries_count < config.get('http_client.max_retries') \
                     or (not status_code or response.status_code in expected_status_codes):
                 break
@@ -39,12 +42,14 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[Union[int, list[int]]] = None
+            status_code: Optional[Union[int, list[int]]] = None,
+            **kwargs
     ) -> requests.Response:
         return self._request(requests.get, path,
                              headers=headers,
                              params=query_parameters,
-                             status_code=status_code)
+                             status_code=status_code,
+                             **kwargs)
 
     def _put(
             self,
@@ -53,13 +58,15 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[Union[int, list[int]]] = None
+            status_code: Optional[Union[int, list[int]]] = None,
+            **kwargs
     ) -> requests.Response:
         return self._request(requests.put, path,
                              data=data,
                              headers=headers,
                              params=query_parameters,
-                             status_code=status_code)
+                             status_code=status_code,
+                             **kwargs)
 
     def _post(
             self,
@@ -69,14 +76,16 @@ class BaseJsonRestClient:
             files: Optional[dict[str, IO]] = None,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[Union[int, list[int]]] = None
+            status_code: Optional[Union[int, list[int]]] = None,
+            **kwargs
     ) -> requests.Response:
         return self._request(requests.post, path,
                              data=data,
                              files=files,
                              headers=headers,
                              params=query_parameters,
-                             status_code=status_code)
+                             status_code=status_code,
+                             **kwargs)
 
     def _delete(
             self,
@@ -84,9 +93,11 @@ class BaseJsonRestClient:
             *,
             headers: Optional[dict[str, str]] = None,
             query_parameters: Optional[dict[str, Any]] = None,
-            status_code: Optional[Union[int, list[int]]] = None
+            status_code: Optional[Union[int, list[int]]] = None,
+            **kwargs
     ) -> requests.Response:
         return self._request(requests.get, path,
                              headers=headers,
                              params=query_parameters,
-                             status_code=status_code)
+                             status_code=status_code,
+                             **kwargs)

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import date
-from typing import Optional
+from typing import Optional, Tuple
 
 from cinema_release_watcher.api_clients.base import BaseJsonRestClient
 from cinema_release_watcher.domain.movies import Movie, Genre
@@ -17,4 +17,8 @@ class Client(BaseJsonRestClient, ABC):
 
     @abstractmethod
     def get_movie_director(self, movie_id: int) -> Optional[str]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_image(self, movie_id: int) -> Tuple[Optional[bytes], Optional[str]]:
         raise NotImplementedError

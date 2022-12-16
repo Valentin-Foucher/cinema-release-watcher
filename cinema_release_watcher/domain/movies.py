@@ -23,6 +23,7 @@ class Movie:
     release_date: str
     genres: Optional[list[str]] = None
     director: Optional[str] = None
+    image: Optional[str] = None
 
     def with_genres(self, genres_list: list[Genre]) -> 'Movie':
         self.genres = [genre.name for genre in genres_list if genre.id in self.genre_ids]

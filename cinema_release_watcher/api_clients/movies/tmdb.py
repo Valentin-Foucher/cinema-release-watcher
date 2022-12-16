@@ -1,6 +1,7 @@
+import re
 import sys
 from datetime import date
-from typing import Optional
+from typing import Optional, Tuple
 
 from requests import JSONDecodeError
 
@@ -69,3 +70,26 @@ class TMdBClient(Client):
             return next(person.get('name') for person in json_response.get('crew') if person.get('job') == DIRECTOR)
         except StopIteration:
             return
+
+    def get_image(self, movie_id: int) -> Tuple[Optional[bytes], Optional[str]]:
+        response = self._get(f'3/movie/{movie_id}',
+                             query_parameters={'api_key': self._config['api_key']},
+                             status_code=[304, 200])
+
+        try:
+            json_response = response.json()
+        except JSONDecodeError:
+            raise RuntimeError(f'Could not decode response: {response.text}')
+
+        poster_path = json_response.get('poster_path')
+        if not poster_path:
+            return None, None
+
+        response = self._get(f't/p/original{poster_path}',
+                             client_type='images',
+                             query_parameters={'api_key': self._config['api_key']},
+                             status_code=200)
+
+        return response.content, re.sub(r'^[^.]+', '', poster_path)[1:]
+
+
