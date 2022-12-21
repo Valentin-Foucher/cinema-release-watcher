@@ -18,7 +18,7 @@ def prepare_movie_for_rendering(movie: Movie, tmdb_client):
 
 def main(strategy: str):
     this_week = datetime.now(timezone.utc).date()
-    last_week = this_week - timedelta(days=7)
+    last_week = this_week - timedelta(days=6)
 
     tmdb_client = TMdBClient(config.get('TMdB'))
     genres = tmdb_client.retrieve_genres()
