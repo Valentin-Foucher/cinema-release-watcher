@@ -19,7 +19,7 @@ class PdfResource:
         os.remove(self.file_name)
 
     def _generate(self) -> str:
-        template = Environment(loader=FileSystemLoader("templates/")).get_template('alert.html')
+        template = Environment(loader=FileSystemLoader('templates/')).get_template('alert.html')
         html = template.render(starred_movies=self._starred_movies,
                                relevant_movies=self._relevant_movies)
         pdfkit.from_string(html, file_name := 'release-report.pdf')
