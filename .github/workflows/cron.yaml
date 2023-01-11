@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install wkhtmltopdf
-        run: sudo apt-get install wkhtmltopdf
+        run: sudo apt-get update && sudo apt-get install wkhtmltopdf
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
