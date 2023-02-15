@@ -5,6 +5,7 @@
     <style>
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-style: normal; font-variant: normal; line-height: 26.4px;
+            margin: 0; padding: 0; border: 0;
         }
         img.emoji {
            height: 1em;
@@ -39,12 +40,17 @@
         }
         .movie {
             display: flex;
-            display: -webkit-box; // wkhtmltopdf
+            display: -webkit-box;
+            page-break-inside: avoid;
+            page-break-before: avoid;
+            page-break-after: avoid;
         }
         .movie:nth-of-type(even) {
             flex-direction: row-reverse;
+            -webkit-box-direction: reverse;
         }
         .movie-info {
+            width: 70%;
             margin: 0 10px;
         }
 
