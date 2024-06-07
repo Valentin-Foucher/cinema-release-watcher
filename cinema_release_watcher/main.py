@@ -13,7 +13,8 @@ from cinema_release_watcher.utils.image_utils import build_src_for_html
 def prepare_movie_for_rendering(movie: Movie, tmdb_client):
     movie.director = tmdb_client.get_movie_director(movie.id)
     image, extension = tmdb_client.get_image(movie.id)
-    movie.image = build_src_for_html(image, extension)
+    if image:
+        movie.image = build_src_for_html(image, extension)
 
 
 def main(strategy: str):
